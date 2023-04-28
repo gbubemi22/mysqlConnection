@@ -1,5 +1,6 @@
-const { Sequelize, DataTypes } = require('sequelize');
-const config = require('./config');
+import { Sequelize, DataTypes } from 'sequelize';
+import config from './config';
+import { ACCOUNT_TYPES } from '../constaint'
 
 // Create a new Sequelize instance
 const sequelize = new Sequelize(config.database, config.username, config.password, {
@@ -20,11 +21,22 @@ const User = sequelize.define('User', {
   email: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true
+    unique: true,
+    validate: {
+      isEmail: {
+        args: true,
+        msg: 'Invalid email address'
+      }
+    }
   },
   password: {
     type: DataTypes.STRING,
     allowNull: false
+  },
+  type: {
+    type: DataTypes.STRING,
+    enum: ACCOUNT_TYPES,
+    default: ACCOUNT_TYPES.USER
   }
 });
 
