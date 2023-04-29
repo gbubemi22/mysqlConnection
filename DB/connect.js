@@ -1,10 +1,10 @@
 import mysql from 'mysql2';
 
 // Create a connection pool
-const pool = mysql.createPool({
+const connection = mysql.createConnection({
   host: process.env.HOST,
-  user: process.env.USER,
-  password: process.env.PASSWORD,
+  user: 'root',
+  password: 'password@123',
   database: process.env.DATABASE,
   port: process.env.DB_PORT
 });
@@ -14,21 +14,15 @@ const pool = mysql.createPool({
 
 // Initialize the connection pool
 function initializeDatabase() {
-  return new Promise((resolve, reject) => {
-    pool.getConnection((err, connection) => {
-      if (err) throw err;
-    
-      // Use the connection
-      connection.query('SELECT * FROM tut', (err, rows) => {
-        if (err) throw err;
-    
-        console.log(rows);
-    
-        connection.release(); // Release the connection back to the pool
-        resolve();
-      });
-    });
-  });
+  connection.connect((err) => {
+    if (err) {
+        console.error('Error connecting to MySQL database: ', err);
+    } else {
+        console.log('Connected to MySQL database!');
+    }
+});
+
+connection.end();
 }
 
 export default initializeDatabase
